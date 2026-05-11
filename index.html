@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laboratorio Virtual — Áreas y Volúmenes · Cálculo Integral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})"></script>
+<style>
+:root{
+  --bg:#04080f;--surface:#0b1525;--card:rgba(11,21,37,0.9);
+  --border:rgba(0,180,220,0.18);--border2:rgba(0,180,220,0.35);
+  --accent:#00d4ff;--accent2:#ff6b35;--accent3:#a855f7;
+  --green:#10b981;--yellow:#fbbf24;--red:#ef4444;
+  --text:#dde8f8;--text-dim:#7a90aa;
+  --mm:#f43f5e;--ind:#f97316;--sw:#22c55e;
+  --sis:#3b82f6;--tel:#a855f7;--ds:#06b6d4;
+  --fh:'Orbitron',sans-serif;--fb:'Exo 2',sans-serif;--fm:'JetBrains Mono',monospace;
+  --r:10px;--r2:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--fb);
+  min-height:100vh;overflow-x:hidden;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% 0%,rgba(0,100,160,0.18) 0%,transparent 60%),
+    linear-gradient(rgba(0,180,220,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,180,220,0.03) 1px,transparent 1px);
+  background-size:100% 100%,48px 48px,48px 48px;
+}
+/* ── HEADER ── */
+header{
+  text-align:center;padding:2.2rem 2rem 1.4rem;
+  background:linear-gradient(180deg,rgba(0,25,55,0.95) 0%,transparent 100%);
+  border-bottom:1px solid var(--border);position:relative;overflow:hidden;
+}
+header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 50% -20%,rgba(0,212,255,0.1) 0%,transparent 70%);
+  pointer-events:none;
+}
+.logo-row{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:.5rem}
+.lab-icon{font-size:2.2rem;filter:drop-shadow(0 0 10px #00d4ff);animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{filter:drop-shadow(0 0 10px #00d4ff)}50%{filter:drop-shadow(0 0 20px #00d4ff)}}
+h1{
+  font-family:var(--fh);font-size:clamp(1rem,3vw,1.9rem);font-weight:900;
+  background:linear-gradient(90deg,#00d4ff 0%,#a855f7 50%,#ff6b35 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  letter-spacing:.06em;text-transform:uppercase;
+}
+.subtitle{font-family:var(--fb);font-size:clamp(.75rem,1.6vw,.95rem);color:var(--text-dim);letter-spacing:.14em;text-transform:uppercase;margin:.3rem 0 .7rem}
+.author-badge{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:linear-gradient(135deg,rgba(0,212,255,0.08),rgba(168,85,247,0.1));
+  border:1px solid rgba(168,85,247,0.3);border-radius:50px;
+  padding:.28rem 1.1rem;font-size:.75rem;color:#c4b5fd;font-family:var(--fh);letter-spacing:.08em;
+}
+/* ── TABS ── */
+.tabs-nav{
+  display:flex;background:rgba(0,0,0,0.5);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);overflow-x:auto;
+}
+.tab-btn{
+  flex:1;min-width:130px;padding:.85rem .4rem;cursor:pointer;
+  font-family:var(--fh);font-size:.65rem;letter-spacing:.06em;text-transform:uppercase;
+  background:transparent;border:none;color:var(--text-dim);
+  border-bottom:3px solid transparent;transition:all .3s;
+  display:flex;flex-direction:column;align-items:center;gap:.25rem;
+}
+.tab-btn .ti{font-size:1.2rem}
+.tab-btn:hover{color:var(--accent);background:rgba(0,212,255,0.04)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(0,212,255,0.04)}
+/* ── PANELS ── */
+.tab-panel{display:none;animation:fadeIn .35s ease}
+.tab-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.container{max-width:1280px;margin:0 auto;padding:2rem 1.5rem}
+/* ── SECTION TITLE ── */
+.stitle{
+  font-family:var(--fh);font-size:clamp(.8rem,2.2vw,1.15rem);font-weight:800;
+  color:var(--accent);letter-spacing:.1em;text-transform:uppercase;
+  border-left:4px solid var(--accent);padding-left:.9rem;margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:.7rem;
+}
+/* ── CARDS ── */
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r2);
+  backdrop-filter:blur(8px);padding:1.5rem;margin-bottom:1.5rem;
+  box-shadow:0 4px 24px rgba(0,0,0,0.4);
+}
+/* ── THEORY ── */
+.theory-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.2rem;margin-bottom:2rem}
+.tc{
+  background:linear-gradient(135deg,rgba(0,18,38,0.95),rgba(0,8,22,0.98));
+  border:1px solid var(--border);border-radius:var(--r2);padding:1.4rem;
+  position:relative;overflow:hidden;
+}
+.tc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.tc.t1::before{background:linear-gradient(90deg,#00d4ff,#a855f7)}
+.tc.t2::before{background:linear-gradient(90deg,#ff6b35,#fbbf24)}
+.tc.t3::before{background:linear-gradient(90deg,#10b981,#06b6d4)}
+.tc.t4::before{background:linear-gradient(90deg,#f43f5e,#a855f7)}
+.tc.t5::before{background:linear-gradient(90deg,#a855f7,#3b82f6)}
+.tc.t6::before{background:linear-gradient(90deg,#22c55e,#10b981)}
+.tc h3{font-family:var(--fh);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.9rem;color:var(--accent)}
+.fbox{background:rgba(0,0,0,0.55);border:1px solid rgba(0,212,255,0.18);border-radius:var(--r);padding:.9rem;margin:.7rem 0;text-align:center;font-size:1.05em}
+.msteps{list-style:none;margin-top:.9rem}
+.msteps li{padding:.42rem 0 .42rem 1.4rem;border-bottom:1px solid rgba(255,255,255,0.04);position:relative;font-size:.83rem;color:var(--text-dim)}
+.msteps li::before{content:attr(data-n);position:absolute;left:0;font-family:var(--fm);font-size:.7rem;color:var(--accent);font-weight:600}
+/* ── DEMO CANVAS ── */
+.demo-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:2rem}
+@media(max-width:720px){.demo-row{grid-template-columns:1fr}}
+.cwrap{background:rgba(0,0,0,0.45);border:1px solid var(--border);border-radius:var(--r2);padding:.9rem;text-align:center}
+.cwrap h4{font-family:var(--fh);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:.7rem}
+canvas{max-width:100%;border-radius:8px;display:block}
+/* ── FILTER ── */
+.frow{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:1.8rem;align-items:center}
+.flabel{font-family:var(--fh);font-size:.6rem;letter-spacing:.12em;color:var(--text-dim);text-transform:uppercase}
+.fbtn{
+  padding:.35rem .9rem;border-radius:50px;border:1px solid;cursor:pointer;
+  font-family:var(--fh);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;
+  transition:all .22s;background:transparent;
+}
+.fbtn[data-c="all"]{border-color:var(--text-dim);color:var(--text-dim)}
+.fbtn[data-c="mm"]{border-color:var(--mm);color:var(--mm)}
+.fbtn[data-c="ind"]{border-color:var(--ind);color:var(--ind)}
+.fbtn[data-c="sw"]{border-color:var(--sw);color:var(--sw)}
+.fbtn[data-c="sis"]{border-color:var(--sis);color:var(--sis)}
+.fbtn[data-c="tel"]{border-color:var(--tel);color:var(--tel)}
+.fbtn[data-c="ds"]{border-color:var(--ds);color:var(--ds)}
+.fbtn.active,.fbtn:hover{color:#fff;box-shadow:0 0 10px currentColor}
+.fbtn[data-c="all"].active,.fbtn[data-c="all"]:hover{background:var(--text-dim)}
+.fbtn[data-c="mm"].active,.fbtn[data-c="mm"]:hover{background:var(--mm)}
+.fbtn[data-c="ind"].active,.fbtn[data-c="ind"]:hover{background:var(--ind)}
+.fbtn[data-c="sw"].active,.fbtn[data-c="sw"]:hover{background:var(--sw)}
+.fbtn[data-c="sis"].active,.fbtn[data-c="sis"]:hover{background:var(--sis)}
+.fbtn[data-c="tel"].active,.fbtn[data-c="tel"]:hover{background:var(--tel)}
+.fbtn[data-c="ds"].active,.fbtn[data-c="ds"]:hover{background:var(--ds)}
+/* ── EXERCISE CARDS ── */
+.exgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1.3rem}
+.excard{background:var(--card);border-radius:var(--r2);overflow:hidden;border:1px solid var(--border);transition:all .28s}
+.excard:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,0.5)}
+.excard[data-c="mm"]{border-top:3px solid var(--mm)}
+.excard[data-c="ind"]{border-top:3px solid var(--ind)}
+.excard[data-c="sw"]{border-top:3px solid var(--sw)}
+.excard[data-c="sis"]{border-top:3px solid var(--sis)}
+.excard[data-c="tel"]{border-top:3px solid var(--tel)}
+.excard[data-c="ds"]{border-top:3px solid var(--ds)}
+.exh{padding:1.1rem 1.4rem .7rem;display:flex;gap:.7rem;align-items:flex-start}
+.exbadge{font-family:var(--fh);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;padding:.22rem .65rem;border-radius:50px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.excard[data-c="mm"] .exbadge{background:rgba(244,63,94,.12);color:var(--mm);border:1px solid rgba(244,63,94,.28)}
+.excard[data-c="ind"] .exbadge{background:rgba(249,115,22,.12);color:var(--ind);border:1px solid rgba(249,115,22,.28)}
+.excard[data-c="sw"] .exbadge{background:rgba(34,197,94,.12);color:var(--sw);border:1px solid rgba(34,197,94,.28)}
+.excard[data-c="sis"] .exbadge{background:rgba(59,130,246,.12);color:var(--sis);border:1px solid rgba(59,130,246,.28)}
+.excard[data-c="tel"] .exbadge{background:rgba(168,85,247,.12);color:var(--tel);border:1px solid rgba(168,85,247,.28)}
+.excard[data-c="ds"] .exbadge{background:rgba(6,182,212,.12);color:var(--ds);border:1px solid rgba(6,182,212,.28)}
+.extitle{font-family:var(--fh);font-size:.75rem;font-weight:700;letter-spacing:.04em;line-height:1.4}
+.exb{padding:0 1.4rem 1.1rem}
+.excmp{font-size:.73rem;color:var(--text-dim);margin-bottom:.7rem}
+.exctx{font-size:.83rem;line-height:1.6;color:var(--text-dim);margin-bottom:.7rem;font-style:italic}
+.expb{font-size:.88rem;line-height:1.7;margin-bottom:.9rem;background:rgba(0,212,255,0.035);border-left:3px solid rgba(0,212,255,0.28);padding:.65rem .9rem;border-radius:0 var(--r) var(--r) 0}
+.exfp{background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.07);border-radius:var(--r);padding:.75rem;text-align:center;margin-bottom:.9rem}
+.bsol{width:100%;padding:.6rem;border-radius:var(--r);border:none;cursor:pointer;font-family:var(--fh);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;transition:all .28s;display:flex;align-items:center;justify-content:center;gap:.45rem}
+.excard[data-c="mm"] .bsol{background:rgba(244,63,94,.12);color:var(--mm)} .excard[data-c="mm"] .bsol:hover{background:var(--mm);color:#fff}
+.excard[data-c="ind"] .bsol{background:rgba(249,115,22,.12);color:var(--ind)} .excard[data-c="ind"] .bsol:hover{background:var(--ind);color:#fff}
+.excard[data-c="sw"] .bsol{background:rgba(34,197,94,.12);color:var(--sw)} .excard[data-c="sw"] .bsol:hover{background:var(--sw);color:#fff}
+.excard[data-c="sis"] .bsol{background:rgba(59,130,246,.12);color:var(--sis)} .excard[data-c="sis"] .bsol:hover{background:var(--sis);color:#fff}
+.excard[data-c="tel"] .bsol{background:rgba(168,85,247,.12);color:var(--tel)} .excard[data-c="tel"] .bsol:hover{background:var(--tel);color:#fff}
+.excard[data-c="ds"] .bsol{background:rgba(6,182,212,.12);color:var(--ds)} .excard[data-c="ds"] .bsol:hover{background:var(--ds);color:#fff}
+.solpanel{display:none;border-top:1px solid var(--border);padding:1.1rem 1.4rem;background:rgba(0,0,0,.35)}
+.solpanel.open{display:block;animation:fadeIn .3s ease}
+.solstep{display:flex;gap:.7rem;margin-bottom:.75rem;font-size:.84rem;line-height:1.6}
+.soln{flex-shrink:0;width:1.35rem;height:1.35rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:.68rem;font-weight:600;margin-top:.15rem;background:rgba(0,212,255,.14);color:var(--accent)}
+.solres{background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.28);border-radius:var(--r);padding:.75rem .9rem;margin-top:.75rem;font-family:var(--fm);font-size:.88rem;color:var(--green);text-align:center}
+/* ══════════════════════════════════════════
+   LAB SECTION
+══════════════════════════════════════════ */
+/* Student Input Area */
+.lab-hero{
+  background:linear-gradient(135deg,rgba(0,25,50,0.95),rgba(5,0,25,0.98));
+  border:1px solid var(--border2);border-radius:var(--r2);
+  padding:2rem;margin-bottom:2rem;
+  position:relative;overflow:hidden;
+}
+.lab-hero::before{
+  content:'';position:absolute;top:-40%;left:-10%;width:50%;height:200%;
+  background:radial-gradient(ellipse,rgba(0,212,255,0.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.lab-hero::after{
+  content:'';position:absolute;top:-40%;right:-10%;width:50%;height:200%;
+  background:radial-gradient(ellipse,rgba(168,85,247,0.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-title{
+  font-family:var(--fh);font-size:clamp(.8rem,2vw,1rem);font-weight:800;
+  color:var(--accent);letter-spacing:.12em;text-transform:uppercase;
+  margin-bottom:1.5rem;display:flex;align-items:center;gap:.7rem;
+}
+.inputs-grid{display:grid;grid-template-columns:1fr 1fr auto auto;gap:.9rem;align-items:end;margin-bottom:1.2rem}
+@media(max-width:720px){.inputs-grid{grid-template-columns:1fr 1fr}}
+.inp-group{display:flex;flex-direction:column;gap:.38rem}
+.inp-label{font-family:var(--fh);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim)}
+.inp-sub{font-family:var(--fm);font-size:.62rem;color:var(--accent);opacity:.7;margin-top:.15rem}
+.finput{
+  background:rgba(0,0,0,.55);border:1px solid var(--border2);border-radius:var(--r);
+  padding:.55rem .8rem;color:var(--text);font-family:var(--fm);font-size:.88rem;
+  outline:none;transition:border-color .2s,box-shadow .2s;width:100%;
+}
+.finput:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(0,212,255,0.12)}
+.finput.error{border-color:var(--red);box-shadow:0 0 0 2px rgba(239,68,68,0.15)}
+.fselect{
+  background:rgba(0,0,0,.55);border:1px solid var(--border2);border-radius:var(--r);
+  padding:.55rem .8rem;color:var(--text);font-family:var(--fb);font-size:.85rem;
+  outline:none;cursor:pointer;width:100%;
+}
+.fselect option{background:#0b1525;color:var(--text)}
+.ab-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.9rem;margin-bottom:1.2rem}
+.calc-btns{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center}
+.btn-calc{
+  padding:.72rem 1.6rem;border-radius:var(--r);border:none;cursor:pointer;
+  font-family:var(--fh);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:700;transition:all .28s;display:flex;align-items:center;gap:.5rem;
+}
+.btn-calc.primary{
+  background:linear-gradient(135deg,#00d4ff,#0088cc);color:#000;
+  box-shadow:0 4px 16px rgba(0,212,255,0.32);
+}
+.btn-calc.primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,212,255,0.5)}
+.btn-calc.secondary{background:rgba(168,85,247,.15);color:var(--accent3);border:1px solid rgba(168,85,247,.3)}
+.btn-calc.secondary:hover{background:var(--accent3);color:#fff}
+.btn-calc.danger{background:rgba(255,255,255,.06);color:var(--text-dim);border:1px solid rgba(255,255,255,.12)}
+.btn-calc.danger:hover{background:rgba(255,255,255,.12);color:var(--text)}
+.presets-strip{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(255,255,255,.06)}
+.pchip{
+  padding:.28rem .7rem;border-radius:50px;border:1px solid rgba(168,85,247,.28);
+  background:rgba(168,85,247,.07);color:var(--accent3);cursor:pointer;
+  font-family:var(--fm);font-size:.72rem;transition:all .2s;
+}
+.pchip:hover{background:var(--accent3);color:#fff;border-color:var(--accent3)}
+.pstrip-label{font-family:var(--fh);font-size:.58rem;letter-spacing:.1em;color:var(--text-dim);text-transform:uppercase;align-self:center}
+/* Results dual display */
+.results-dual{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.3rem}
+@media(max-width:600px){.results-dual{grid-template-columns:1fr}}
+.rbox{
+  border-radius:var(--r);padding:1.1rem 1.2rem;display:none;
+  animation:fadeIn .4s ease;
+}
+.rbox.show{display:block}
+.rbox.area-box{background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.28)}
+.rbox.vol-box{background:rgba(255,107,53,.07);border:1px solid rgba(255,107,53,.28)}
+.rbox-icon{font-size:1.4rem;margin-bottom:.4rem}
+.rbox-label{font-family:var(--fh);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.3rem}
+.rbox.area-box .rbox-label{color:var(--accent)}
+.rbox.vol-box .rbox-label{color:var(--accent2)}
+.rbox-value{font-family:var(--fm);font-size:1.5rem;font-weight:700;color:#fff}
+.rbox-formula{font-size:.78rem;margin-top:.35rem;font-family:var(--fm)}
+.rbox.area-box .rbox-formula{color:rgba(0,212,255,.65)}
+.rbox.vol-box .rbox-formula{color:rgba(255,107,53,.65)}
+.error-msg{display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:var(--r);padding:.65rem 1rem;color:#fca5a5;font-size:.83rem;margin-top:.8rem}
+.error-msg.show{display:block;animation:fadeIn .3s ease}
+/* ── DUAL CANVAS SECTION ── */
+.canvas-section{margin-top:2rem}
+.canvas-section-title{font-family:var(--fh);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+.canvas-duo{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+@media(max-width:860px){.canvas-duo{grid-template-columns:1fr}}
+.cviz{
+  background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:var(--r2);
+  overflow:hidden;position:relative;
+}
+.cviz-header{
+  padding:.7rem 1rem;background:rgba(0,0,0,.4);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.cviz-title{font-family:var(--fh);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase}
+.cviz-title.area-t{color:var(--accent)}
+.cviz-title.vol-t{color:var(--accent2)}
+.cviz-hint{font-size:.68rem;color:var(--text-dim);font-family:var(--fm)}
+.cviz canvas{width:100%;display:block}
+.cviz-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:320px;color:var(--text-dim);font-family:var(--fh);font-size:.65rem;
+  letter-spacing:.1em;text-transform:uppercase;gap:.7rem;
+}
+.cviz-empty .ei{font-size:2.5rem;opacity:.35}
+/* ── QUIZ ── */
+.qpbar{height:5px;background:rgba(255,255,255,.08);border-radius:50px;margin-bottom:1.3rem;overflow:hidden}
+.qpfill{height:100%;background:linear-gradient(90deg,#00d4ff,#a855f7);border-radius:50px;transition:width .5s ease}
+.qmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.3rem}
+.qcnt{font-family:var(--fh);font-size:.68rem;letter-spacing:.08em;color:var(--text-dim)}
+.qtimer{font-family:var(--fm);font-size:.88rem;color:var(--yellow);background:rgba(251,191,36,.09);padding:.18rem .65rem;border-radius:50px;border:1px solid rgba(251,191,36,.2)}
+.qcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:1.8rem;margin-bottom:1.3rem}
+.qnum{font-family:var(--fh);font-size:.62rem;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;margin-bottom:.7rem}
+.qtext{font-size:.97rem;line-height:1.75;margin-bottom:1.3rem}
+.qfml{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.07);border-radius:var(--r);padding:.75rem;text-align:center;margin-bottom:1.1rem}
+.ogrid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:580px){.ogrid{grid-template-columns:1fr}}
+.obtn{
+  padding:.8rem .9rem;border-radius:var(--r);border:1px solid var(--border);
+  background:rgba(255,255,255,.025);cursor:pointer;text-align:left;color:var(--text);
+  font-family:var(--fb);font-size:.86rem;line-height:1.4;transition:all .22s;
+  display:flex;align-items:flex-start;gap:.65rem;
+}
+.obtn:hover{border-color:var(--accent);background:rgba(0,212,255,.06)}
+.obtn.correct{border-color:var(--green)!important;background:rgba(16,185,129,.13)!important;color:var(--green)!important}
+.obtn.wrong{border-color:var(--red)!important;background:rgba(239,68,68,.13)!important;color:#f87171!important}
+.obtn.disabled{pointer-events:none}
+.olet{font-family:var(--fm);font-size:.78rem;font-weight:600;width:1.35rem;height:1.35rem;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.07);flex-shrink:0;margin-top:.05rem}
+.qfb{display:none;padding:.9rem;border-radius:var(--r);margin-top:.9rem;font-size:.86rem;line-height:1.6}
+.qfb.show{display:block;animation:fadeIn .3s ease}
+.qfb.ok{background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.28);color:#6ee7b7}
+.qfb.bad{background:rgba(239,68,68,.09);border:1px solid rgba(239,68,68,.28);color:#fca5a5}
+.nbtns{display:flex;gap:.9rem;justify-content:flex-end;margin-top:.9rem}
+.bnext{padding:.62rem 1.7rem;border-radius:var(--r);border:1px solid var(--accent);background:rgba(0,212,255,.09);color:var(--accent);cursor:pointer;font-family:var(--fh);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;transition:all .22s}
+.bnext:hover{background:var(--accent);color:#000;font-weight:700}
+/* Results */
+.rescrd{text-align:center;max-width:580px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:2.5rem 1.8rem}
+.scircle{width:130px;height:130px;border-radius:50%;border:5px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1.3rem;font-family:var(--fh)}
+.spct{font-size:2rem;font-weight:900}
+.slbl{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;margin-top:.15rem}
+.scircle.pass{border-color:var(--green);color:var(--green);box-shadow:0 0 28px rgba(16,185,129,.28)}
+.scircle.fail{border-color:var(--red);color:#f87171;box-shadow:0 0 20px rgba(239,68,68,.18)}
+.cert{background:linear-gradient(135deg,rgba(0,212,255,.06),rgba(168,85,247,.08));border:2px solid rgba(168,85,247,.28);border-radius:var(--r2);padding:1.3rem;margin:1.3rem 0}
+.ctitle{font-family:var(--fh);font-size:.75rem;letter-spacing:.1em;color:var(--accent3);text-transform:uppercase;margin-bottom:.45rem}
+.ctext{font-size:.87rem;line-height:1.7;color:var(--text-dim)}
+.bretry{padding:.65rem 1.8rem;border-radius:50px;border:none;cursor:pointer;background:linear-gradient(135deg,#00d4ff,#a855f7);color:#000;font-family:var(--fh);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;transition:all .28s;margin-top:.9rem;box-shadow:0 4px 18px rgba(0,212,255,.28)}
+.bretry:hover{transform:scale(1.04);box-shadow:0 6px 28px rgba(168,85,247,.35)}
+/* Table */
+.tbl{width:100%;border-collapse:collapse;font-size:.84rem}
+.tbl th{text-align:left;padding:.65rem .7rem;font-family:var(--fh);font-size:.62rem;letter-spacing:.1em;color:var(--accent);text-transform:uppercase;border-bottom:2px solid var(--border)}
+.tbl td{padding:.65rem .7rem;border-bottom:1px solid var(--border);color:var(--text-dim)}
+/* Misc */
+.divider{height:1px;background:var(--border);margin:2rem 0}
+footer{text-align:center;padding:1.8rem;font-size:.72rem;color:var(--text-dim);border-top:1px solid var(--border);font-family:var(--fh);letter-spacing:.08em}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:rgba(0,0,0,.2)}
+::-webkit-scrollbar-thumb{background:rgba(0,212,255,.28);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header>
+  <div class="logo-row">
+    <div class="lab-icon">⚗️</div>
+    <div>
+      <h1>Laboratorio Virtual de Integrales</h1>
+      <div class="subtitle">Áreas y Volúmenes · Cálculo Integral</div>
+    </div>
+  </div>
+  <div class="author-badge">✦ Creado por Astrid Bolívar ✦</div>
+</header>
+
+<!-- ═══ TABS ═══ -->
+<nav class="tabs-nav">
+  <button class="tab-btn active" onclick="switchTab('resumen',this)"><span class="ti">📚</span>Resumen Teórico</button>
+  <button class="tab-btn" onclick="switchTab('ejercicios',this)"><span class="ti">📝</span>Ejercicios Aplicados</button>
+  <button class="tab-btn" onclick="switchTab('lab',this)"><span class="ti">🔬</span>Laboratorio Interactivo</button>
+  <button class="tab-btn" onclick="switchTab('quiz',this)"><span class="ti">🏆</span>Autoevaluación</button>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     TAB 1 — RESUMEN
+══════════════════════════════════════════ -->
+<div class="tab-panel active" id="tab-resumen">
+<div class="container">
+  <div class="stitle">⚡ Áreas mediante Integrales Definidas</div>
+  <div class="theory-grid">
+    <div class="tc t1">
+      <h3>🔷 Área bajo una curva</h3>
+      <p style="font-size:.83rem;color:var(--text-dim);line-height:1.6;margin-bottom:.7rem">Área de la región entre $f(x)$, el eje $x$ y $x=a$, $x=b$ (con $f(x)\geq 0$):</p>
+      <div class="fbox">$$A = \int_a^b f(x)\,dx$$</div>
+      <ul class="msteps">
+        <li data-n="1.">Identificar $f(x)$ y los límites $[a,b]$</li>
+        <li data-n="2.">Verificar $f(x)\geq 0$ en $[a,b]$</li>
+        <li data-n="3.">Calcular la antiderivada $F(x)$</li>
+        <li data-n="4.">Evaluar $F(b)-F(a)$ — Teorema Fundamental</li>
+      </ul>
+    </div>
+    <div class="tc t1">
+      <h3>🔷 Área entre dos curvas</h3>
+      <p style="font-size:.83rem;color:var(--text-dim);line-height:1.6;margin-bottom:.7rem">Si $f(x)\geq g(x)$ en $[a,b]$:</p>
+      <div class="fbox">$$A = \int_a^b \left[f(x) - g(x)\right]dx$$</div>
+      <ul class="msteps">
+        <li data-n="1.">Hallar intersecciones: $f(x)=g(x)$ para encontrar $a,b$</li>
+        <li data-n="2.">Identificar cuál curva es superior en el intervalo</li>
+        <li data-n="3.">Integrar: $\int(f-g)dx$ — curva superior menos inferior</li>
+        <li data-n="4.">Si hay cruces, dividir el intervalo</li>
+      </ul>
+    </div>
+    <div class="tc t2">
+      <h3>🔶 Volumen — Método del Disco</h3>
+      <p style="font-size:.83rem;color:var(--text-dim);line-height:1.6;margin-bottom:.7rem">Rotación de $f(x)$ alrededor del <strong>eje $x$</strong>:</p>
+      <div class="fbox">$$V = \pi\int_a^b \left[f(x)\right]^2 dx$$</div>
+      <p style="font-size:.8rem;color:var(--text-dim);line-height:1.5">Cada rebanada perpendicular es un disco de radio $R=f(x)$ y grosor $dx$. Volumen diferencial: $dV=\pi R^2\,dx$.</p>
+    </div>
+    <div class="tc t3">
+      <h3>🟢 Volumen — Método de la Arandela</h3>
+      <p style="font-size:.83rem;color:var(--text-dim);line-height:1.6;margin-bottom:.7rem">Rotación de la región entre $f(x)\geq g(x)\geq 0$:</p>
+      <div class="fbox">$$V = \pi\int_a^b \left[f(x)^2 - g(x)^2\right]dx$$</div>
+      <p style="font-size:.8rem;color:var(--text-dim);line-height:1.5">Cada sección es una arandela con radio exterior $R=f(x)$ e interior $r=g(x)$.</p>
+    </div>
+    <div class="tc t4">
+      <h3>🔴 Volumen — Capas Cilíndricas</h3>
+      <p style="font-size:.83rem;color:var(--text-dim);line-height:1.6;margin-bottom:.7rem">Rotación alrededor del <strong>eje $y$</strong>:</p>
+      <div class="fbox">$$V = 2\pi\int_a^b x\cdot f(x)\,dx$$</div>
+      <p style="font-size:.8rem;color:var(--text-dim);line-height:1.5">Cada capa tiene radio $x$, altura $f(x)$, grosor $dx$. Área lateral: $2\pi x\cdot f(x)\,dx$.</p>
+    </div>
+    <div class="tc t5">
+      <h3>📌 Propiedades esenciales</h3>
+      <ul class="msteps">
+        <li data-n="▸">$\int_a^a f\,dx=0$ · Intervalo nulo</li>
+        <li data-n="▸">$\int_a^b f\,dx=-\int_b^a f\,dx$ · Invertir límites</li>
+        <li data-n="▸">$\int_a^b cf\,dx=c\int_a^b f\,dx$ · Linealidad</li>
+        <li data-n="▸">$\int_a^b(f\pm g)\,dx=\int f\,dx\pm\int g\,dx$</li>
+        <li data-n="▸">$\int_a^c f=\int_a^b f+\int_b^c f$ · Aditividad</li>
+        <li data-n="▸">Si $f\geq 0$ entonces $\int_a^b f\,dx\geq 0$</li>
+      </ul>
+    </div>
+  </div>
+  <div class="demo-row">
+    <div class="cwrap">
+      <h4>📐 Área bajo $f(x)=x^2$ en $[0,3]$</h4>
+      <canvas id="demoArea" width="480" height="280"></canvas>
+      <p style="font-size:.72rem;color:var(--text-dim);margin-top:.5rem;font-family:var(--fh);letter-spacing:.06em">Área $= [x^3/3]_0^3 = 9$ u²</p>
+    </div>
+    <div class="cwrap">
+      <h4>🌀 Sólido de revolución: $f(x)=\sqrt{x}$ en $[0,4]$ rotada en eje $x$</h4>
+      <canvas id="demoVol" width="480" height="280"></canvas>
+      <p style="font-size:.72rem;color:var(--text-dim);margin-top:.5rem;font-family:var(--fh);letter-spacing:.06em">$V=\pi\int_0^4 x\,dx=\pi[x^2/2]_0^4=8\pi\approx 25.13$ u³</p>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="stitle">🧮 Comparativa de Métodos</div>
+  <div class="card">
+    <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Método</th><th>Eje de Rotación</th><th>Fórmula</th><th>¿Cuándo usarlo?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="color:var(--accent);font-weight:600">Disco</td><td>Eje $x$</td><td style="font-family:var(--fm);font-size:.8rem">$\pi\int[f(x)]^2\,dx$</td><td>Sólido macizo sin hueco</td></tr>
+          <tr><td style="color:var(--green);font-weight:600">Arandela</td><td>Eje $x$</td><td style="font-family:var(--fm);font-size:.8rem">$\pi\int[f^2-g^2]\,dx$</td><td>Región entre dos curvas rotada</td></tr>
+          <tr><td style="color:var(--mm);font-weight:600">Capas (Shell)</td><td>Eje $y$</td><td style="font-family:var(--fm);font-size:.8rem">$2\pi\int x\cdot f(x)\,dx$</td><td>Integrar en $x$ al rotar en $y$</td></tr>
+          <tr><td style="color:var(--accent3);font-weight:600">Sección transversal</td><td>Cualquiera</td><td style="font-family:var(--fm);font-size:.8rem">$\int A(x)\,dx$</td><td>Sección de forma conocida</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 2 — EJERCICIOS
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-ejercicios">
+<div class="container">
+  <div class="stitle">📝 Ejercicios Aplicados por Carrera</div>
+  <div class="frow">
+    <span class="flabel">Filtrar:</span>
+    <button class="fbtn active" data-c="all" onclick="filterEx('all',this)">🔭 Todas</button>
+    <button class="fbtn" data-c="mm"  onclick="filterEx('mm',this)">🎬 Multimedia</button>
+    <button class="fbtn" data-c="ind" onclick="filterEx('ind',this)">⚙️ Industrial</button>
+    <button class="fbtn" data-c="sw"  onclick="filterEx('sw',this)">💻 Software</button>
+    <button class="fbtn" data-c="sis" onclick="filterEx('sis',this)">🖥️ Sistemas</button>
+    <button class="fbtn" data-c="tel" onclick="filterEx('tel',this)">📡 Telecomunicaciones</button>
+    <button class="fbtn" data-c="ds"  onclick="filterEx('ds',this)">📊 Ciencia de Datos</button>
+  </div>
+  <div class="exgrid" id="exgrid"></div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 3 — LABORATORIO INTERACTIVO
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-lab">
+<div class="container">
+  <div class="stitle">🔬 Laboratorio Interactivo — Ingresa tu Función</div>
+
+  <!-- HERO INPUT SECTION -->
+  <div class="lab-hero">
+    <div class="hero-title">🧪 Calculadora Personalizada de Áreas y Volúmenes</div>
+
+    <!-- Row 1: functions + type -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.9rem;margin-bottom:1rem">
+      <div class="inp-group">
+        <label class="inp-label">Función f(x) <span style="color:var(--accent);font-size:.65rem">principal / curva superior</span></label>
+        <input class="finput" id="lf" value="x*x" placeholder="x*x, Math.sin(x), Math.sqrt(x)…" autocomplete="off">
+        <div class="inp-sub">sin, cos, sqrt, exp, log, PI, pow(x,n)</div>
+      </div>
+      <div class="inp-group">
+        <label class="inp-label">Función g(x) <span style="color:var(--accent2);font-size:.65rem">curva inferior (opcional)</span></label>
+        <input class="finput" id="lg" value="0" placeholder="0, x, x*x…" autocomplete="off">
+        <div class="inp-sub">Dejar en 0 si solo hay una curva</div>
+      </div>
+      <div class="inp-group">
+        <label class="inp-label">Tipo de Área</label>
+        <select class="fselect" id="ltype">
+          <option value="area">Área bajo f(x)</option>
+          <option value="between">Área entre f(x) y g(x)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Row 2: limits + button -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:.9rem;align-items:end;margin-bottom:1rem">
+      <div class="inp-group">
+        <label class="inp-label">Límite inferior a</label>
+        <input class="finput" id="la" value="0" placeholder="0">
+      </div>
+      <div class="inp-group">
+        <label class="inp-label">Límite superior b</label>
+        <input class="finput" id="lb" value="3" placeholder="3">
+      </div>
+      <div class="inp-group">
+        <label class="inp-label">Método de Volumen</label>
+        <select class="fselect" id="lvmethod">
+          <option value="disk">Disco (eje x): π∫[f(x)]²dx</option>
+          <option value="shell">Capas (eje y): 2π∫x·f(x)dx</option>
+          <option value="washer">Arandela (eje x): π∫[f²−g²]dx</option>
+        </select>
+      </div>
+      <div style="padding-bottom:0">
+        <button class="btn-calc primary" onclick="labCompute()">▶ Calcular Todo</button>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:.8rem;align-items:center">
+      <button class="btn-calc secondary" onclick="labReset()">↺ Limpiar</button>
+      <button class="btn-calc danger" onclick="showHelp()">❓ Sintaxis</button>
+    </div>
+
+    <!-- Presets -->
+    <div class="presets-strip">
+      <span class="pstrip-label">Funciones rápidas →</span>
+      <button class="pchip" onclick="loadP('x*x','0','0','3','area')">x²</button>
+      <button class="pchip" onclick="loadP('Math.sin(x)','0','0','3.1416','area')">sin(x)</button>
+      <button class="pchip" onclick="loadP('Math.sqrt(x)','0','0','4','area')">√x</button>
+      <button class="pchip" onclick="loadP('Math.exp(x)','0','0','2','area')">eˣ</button>
+      <button class="pchip" onclick="loadP('-x*x+4','0','-2','2','area')">4−x²</button>
+      <button class="pchip" onclick="loadP('x*x','x','0','1','between')">x² vs x</button>
+      <button class="pchip" onclick="loadP('-x*x+4','x*x','-1.41','1.41','between')">4−x² vs x²</button>
+      <button class="pchip" onclick="loadP('Math.cos(x)','0','0','1.5708','area')">cos(x)</button>
+      <button class="pchip" onclick="loadP('1/(x+1)','0','0','3','area')">1/(x+1)</button>
+      <button class="pchip" onclick="loadP('x*x*x','x*x','0','1','between')">x³ vs x²</button>
+    </div>
+
+    <!-- RESULTS DUAL -->
+    <div class="results-dual" id="resDual">
+      <div class="rbox area-box" id="resArea">
+        <div class="rbox-icon">📐</div>
+        <div class="rbox-label">Área calculada</div>
+        <div class="rbox-value" id="resAreaVal">—</div>
+        <div class="rbox-formula" id="resAreaForm"></div>
+      </div>
+      <div class="rbox vol-box" id="resVol">
+        <div class="rbox-icon">🌀</div>
+        <div class="rbox-label">Volumen de Revolución</div>
+        <div class="rbox-value" id="resVolVal">—</div>
+        <div class="rbox-formula" id="resVolForm"></div>
+      </div>
+    </div>
+    <div class="error-msg" id="errMsg"></div>
+  </div>
+
+  <!-- DUAL CANVAS -->
+  <div class="canvas-section">
+    <div class="canvas-section-title">📊 Visualización en tiempo real</div>
+    <div class="canvas-duo">
+      <div class="cviz">
+        <div class="cviz-header">
+          <span class="cviz-title area-t">📐 Vista 2D — Área</span>
+          <span class="cviz-hint" id="areaHint">Ingresa una función y calcula</span>
+        </div>
+        <div id="cviz2d-wrap">
+          <div class="cviz-empty" id="empty2d">
+            <div class="ei">📐</div>
+            <div>Área aparecerá aquí</div>
+          </div>
+          <canvas id="cviz2d" width="560" height="340" style="display:none"></canvas>
+        </div>
+      </div>
+      <div class="cviz">
+        <div class="cviz-header">
+          <span class="cviz-title vol-t">🌀 Vista 3D — Sólido de Revolución</span>
+          <span class="cviz-hint" id="volHint">Ingresa una función y calcula</span>
+        </div>
+        <div id="cviz3d-wrap">
+          <div class="cviz-empty" id="empty3d">
+            <div class="ei">🌀</div>
+            <div>Sólido aparecerá aquí</div>
+          </div>
+          <canvas id="cviz3d" width="560" height="340" style="display:none"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Syntax Help -->
+  <div id="syntaxHelp" style="display:none;margin-top:1.5rem">
+    <div class="card">
+      <div class="stitle" style="margin-bottom:1rem;font-size:.8rem">❓ Guía de Sintaxis JavaScript para funciones</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.7rem;font-family:var(--fm);font-size:.82rem">
+        <div style="background:rgba(0,0,0,.3);border-radius:8px;padding:.7rem"><span style="color:var(--accent)">x*x</span> → $x^2$</div>
+        <div style="background:rgba(0,0,0,.3);border-radius:8px;padding:.7rem"><span style="color:var(--accent)">Math.pow(x,3)</span> → $x^3$</div>
+        <div style="background:rgba(0,0,0,.3);border-radius:8px;padding:.7rem"><span style="color:var(--accent)">Math.sqrt(x)</span> → $\sqrt{x}$</div>
+        <div style="background:rgba(0,0,0,.3);border-radius:8px;padding:.7rem"><span style="color:var(--accent)">Math.sin(x)</span> → $\sin(x)$</div>
+        <div style="background:rgba(0,0,0,.3);border-radius:8px;padding:.7rem"><span style="color:var(--accent)">Math.cos(x)</span> → $\cos(x)$</div>
+        <div style="background:rgba(0,0,0,.3);border-radius:8px;padding:.7rem"><span style="color:var(--accent)">Math.exp(x)</span> → $e^x$</div>
+        <div style="background:rgba(0,0,0,.3);border-radius:8px;padding:.7rem"><span style="color:var(--accent)">Math.log(x)</span> → $\ln(x)$</div>
+        <div style="background:rgba(0,0,0,.3);border-radius:8px;padding:.7rem"><span style="color:var(--accent)">Math.abs(x)</span> → $|x|$</div>
+        <div style="background:rgba(0,0,0,.3);border-radius:8px;padding:.7rem"><span style="color:var(--accent)">1/x</span> → $1/x$</div>
+        <div style="background:rgba(0,0,0,.3);border-radius:8px;padding:.7rem"><span style="color:var(--accent)">Math.PI</span> → $\pi$</div>
+        <div style="background:rgba(0,0,0,.3);border-radius:8px;padding:.7rem"><span style="color:var(--accent)">x*Math.exp(-x)</span> → $xe^{-x}$</div>
+        <div style="background:rgba(0,0,0,.3);border-radius:8px;padding:.7rem"><span style="color:var(--accent)">Math.sin(x)*x</span> → $x\sin(x)$</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 4 — AUTOEVALUACIÓN
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-quiz">
+<div class="container" style="max-width:760px">
+  <div id="qstart" style="text-align:center;padding:3rem 1rem">
+    <div style="font-size:3.5rem;margin-bottom:.9rem">🏆</div>
+    <h2 style="font-family:var(--fh);font-size:1.3rem;color:var(--accent);margin-bottom:.9rem;letter-spacing:.08em">AUTOEVALUACIÓN</h2>
+    <p style="color:var(--text-dim);line-height:1.8;margin-bottom:.75rem">10 preguntas · Conceptuales y aplicadas por carrera<br>⏱ Límite: <strong style="color:var(--yellow)">15 minutos</strong> · Aprobación: <strong style="color:var(--green)">70% o más</strong></p>
+    <button class="bretry" onclick="startQuiz()">⚡ Comenzar Evaluación</button>
+  </div>
+  <div id="qmain" style="display:none">
+    <div class="qmeta">
+      <span class="qcnt" id="qcnt">Pregunta 1 de 10</span>
+      <span class="qtimer" id="qtimer">⏱ 15:00</span>
+    </div>
+    <div class="qpbar"><div class="qpfill" id="qpfill" style="width:10%"></div></div>
+    <div id="qcontainer"></div>
+    <div class="nbtns"><button class="bnext" id="bnext" onclick="nextQ()" style="display:none">Siguiente →</button></div>
+  </div>
+  <div id="qresults" style="display:none">
+    <div class="rescrd">
+      <div class="scircle" id="scircle"><div class="spct" id="spct">0%</div><div class="slbl">Puntaje</div></div>
+      <h3 style="font-family:var(--fh);font-size:.95rem;letter-spacing:.07em;margin-bottom:.4rem" id="rmsg"></h3>
+      <p style="color:var(--text-dim);font-size:.87rem;margin-bottom:.9rem" id="rdet"></p>
+      <div class="cert" id="certbox" style="display:none">
+        <div class="ctitle">🎓 Certificado de Aprobación</div>
+        <div class="ctext" id="certtext"></div>
+      </div>
+      <div id="revlist" style="text-align:left;margin-top:1.3rem"></div>
+      <button class="bretry" onclick="retryQuiz()">↺ Intentar de nuevo</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<footer>
+  ⚗️ Laboratorio Virtual de Cálculo Integral · Áreas y Volúmenes
+  &nbsp;·&nbsp; <strong style="color:var(--accent)">Creado por Astrid Bolívar</strong>
+  &nbsp;·&nbsp; Ingeniería · Colombia
+</footer>
+
+<!-- ════════════════════════════
+     JAVASCRIPT
+════════════════════════════ -->
+<script>
+/* ═══════════════════ UTILS ═══════════════════ */
+function safeEval(expr, x) {
+  try {
+    const fn = new Function('x', `
+      const {sin,cos,tan,sqrt,abs,log,exp,PI,pow,floor,ceil,round,min,max,sign,asin,acos,atan} = Math;
+      const ln = Math.log;
+      const v = (${expr});
+      return (typeof v === 'number' && isFinite(v)) ? v : null;
+    `);
+    return fn(x);
+  } catch(e) { return null; }
+}
+
+function evalNum(s) {
+  try { return new Function('return (' + s + ')')(); }
+  catch(e) { return parseFloat(s); }
+}
+
+function integrate(f, a, b, n = 2000) {
+  if(a >= b) return 0;
+  const h = (b - a) / n;
+  let sum = 0;
+  for(let i = 0; i < n; i++) {
+    const v = f(a + (i + 0.5) * h);
+    if(v !== null && isFinite(v)) sum += v;
+  }
+  return sum * h;
+}
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  if(id === 'resumen') { setTimeout(() => { drawDemoArea(); drawDemoVol(); }, 100); }
+}
+
+function showHelp() {
+  const h = document.getElementById('syntaxHelp');
+  h.style.display = h.style.display === 'none' ? 'block' : 'none';
+}
+
+/* ═══════════════════ CANVAS HELPERS ═══════════════════ */
+function bgRect(ctx, w, h) {
+  ctx.fillStyle = '#04080f';
+  ctx.fillRect(0, 0, w, h);
+}
+
+function drawGrid(ctx, mg, pw, ph) {
+  ctx.strokeStyle = 'rgba(255,255,255,0.045)';
+  ctx.lineWidth = 1;
+  for(let i = 0; i <= 6; i++) {
+    const x = mg.l + pw * i / 6;
+    ctx.beginPath(); ctx.moveTo(x, mg.t); ctx.lineTo(x, mg.t + ph); ctx.stroke();
+    const y = mg.t + ph * i / 6;
+    ctx.beginPath(); ctx.moveTo(mg.l, y); ctx.lineTo(mg.l + pw, y); ctx.stroke();
+  }
+}
+
+function drawAxes(ctx, mg, pw, ph) {
+  ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(mg.l, mg.t); ctx.lineTo(mg.l, mg.t + ph + 6); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(mg.l - 6, mg.t + ph); ctx.lineTo(mg.l + pw + 14, mg.t + ph); ctx.stroke();
+  // Arrow x
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.beginPath(); ctx.moveTo(mg.l + pw + 14, mg.t + ph); ctx.lineTo(mg.l + pw + 6, mg.t + ph - 4); ctx.lineTo(mg.l + pw + 6, mg.t + ph + 4); ctx.fill();
+}
+
+function tickLabels(ctx, mg, pw, ph, xMin, xMax, yMin, yMax, toX, toY) {
+  ctx.fillStyle = 'rgba(190,215,235,0.55)';
+  ctx.font = '10px JetBrains Mono, monospace';
+  ctx.textAlign = 'center';
+  const nx = 5;
+  for(let i = 0; i <= nx; i++) {
+    const xv = xMin + (xMax - xMin) * i / nx;
+    ctx.fillText(xv.toFixed(1), toX(xv), mg.t + ph + 16);
+  }
+  ctx.textAlign = 'right';
+  const ny = 4;
+  for(let i = 0; i <= ny; i++) {
+    const yv = yMin + (yMax - yMin) * i / ny;
+    ctx.fillText(yv.toFixed(1), mg.l - 5, toY(yv) + 4);
+  }
+}
+
+/* ═══════════════════ DEMO — AREA ═══════════════════ */
+function drawDemoArea() {
+  const canvas = document.getElementById('demoArea');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const mg = {l:45, r:20, t:18, b:38};
+  const pw = W - mg.l - mg.r, ph = H - mg.t - mg.b;
+  const a = 0, b = 3, f = x => x * x, maxY = 9;
+  const toX = x => mg.l + (x - a) / (b - a) * pw;
+  const toY = y => mg.t + ph - y / maxY * ph;
+
+  let st = null;
+  function frame(ts) {
+    if(!st) st = ts;
+    const p = Math.min(1, (ts - st) / 1200);
+    const bP = a + (b - a) * p;
+    bgRect(ctx, W, H);
+    drawGrid(ctx, mg, pw, ph);
+    // Shade
+    ctx.beginPath();
+    ctx.moveTo(toX(a), toY(0));
+    for(let i = 0; i <= 200; i++) { const x = a + (bP - a) * i / 200; ctx.lineTo(toX(x), toY(f(x))); }
+    ctx.lineTo(toX(bP), toY(0));
+    ctx.closePath();
+    const g = ctx.createLinearGradient(0, toY(maxY), 0, toY(0));
+    g.addColorStop(0, 'rgba(0,212,255,0.65)'); g.addColorStop(1, 'rgba(168,85,247,0.18)');
+    ctx.fillStyle = g; ctx.fill();
+    // Curve
+    ctx.beginPath();
+    for(let i = 0; i <= 300; i++) { const x = a + (b - a) * i / 300; if(i===0) ctx.moveTo(toX(x),toY(f(x))); else ctx.lineTo(toX(x),toY(f(x))); }
+    ctx.strokeStyle = '#00d4ff'; ctx.lineWidth = 2.5; ctx.stroke();
+    drawAxes(ctx, mg, pw, ph);
+    tickLabels(ctx, mg, pw, ph, a, b, 0, maxY, toX, toY);
+    ctx.fillStyle='#00d4ff'; ctx.font='bold 12px Exo 2'; ctx.textAlign='left';
+    ctx.fillText('f(x) = x²', mg.l+8, mg.t+16);
+    if(p < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ═══════════════════ DEMO — VOLUME ═══════════════════ */
+function drawDemoVol() {
+  const canvas = document.getElementById('demoVol');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const mg = {l:45, r:20, t:18, b:38};
+  const pw = W - mg.l - mg.r, ph = H - mg.t - mg.b;
+  const a = 0, b = 4, f = x => Math.sqrt(x), maxR = 2;
+  const toX = x => mg.l + (x - a) / (b - a) * pw;
+  const cy = mg.t + ph / 2;
+  const rScale = (ph / 2) * 0.82 / maxR;
+  const PERSP = 0.18;
+
+  let st = null;
+  function frame(ts) {
+    if(!st) st = ts;
+    const p = Math.min(1, (ts - st) / 1300);
+    const bP = a + (b - a) * p;
+    const N = Math.ceil(200 * p) || 1;
+    bgRect(ctx, W, H);
+    drawGrid(ctx, mg, pw, ph);
+
+    const pts = [];
+    for(let i = 0; i <= N; i++) { const x = a + (bP - a) * i / N; pts.push({x, sx: toX(x), r: f(x) * rScale}); }
+
+    // Body fill
+    ctx.beginPath();
+    pts.forEach((d,i) => { if(i===0) ctx.moveTo(d.sx, cy-d.r); else ctx.lineTo(d.sx, cy-d.r); });
+    for(let i = pts.length-1; i >= 0; i--) ctx.lineTo(pts[i].sx, cy + pts[i].r);
+    ctx.closePath();
+    const grd = ctx.createLinearGradient(0, cy - maxR*rScale, 0, cy + maxR*rScale);
+    grd.addColorStop(0,'rgba(255,120,50,0.18)'); grd.addColorStop(0.5,'rgba(255,107,53,0.48)'); grd.addColorStop(1,'rgba(200,60,0,0.18)');
+    ctx.fillStyle = grd; ctx.fill();
+
+    // Disc lines
+    const nd = Math.min(10, Math.ceil(10*p));
+    for(let k = 0; k <= nd; k++) {
+      const x = a + (bP - a) * k / nd;
+      const r = f(x) * rScale;
+      const sx = toX(x);
+      if(r < 2) continue;
+      ctx.beginPath(); ctx.ellipse(sx, cy, r*PERSP, r, 0, 0, 2*Math.PI);
+      ctx.strokeStyle = 'rgba(255,107,53,0.4)'; ctx.lineWidth = 0.9; ctx.stroke();
+    }
+
+    // Outlines
+    ctx.beginPath(); pts.forEach((d,i)=>{ if(i===0)ctx.moveTo(d.sx,cy-d.r); else ctx.lineTo(d.sx,cy-d.r); });
+    ctx.strokeStyle='#ff6b35'; ctx.lineWidth=2.5; ctx.stroke();
+    ctx.beginPath(); pts.forEach((d,i)=>{ if(i===0)ctx.moveTo(d.sx,cy+d.r); else ctx.lineTo(d.sx,cy+d.r); });
+    ctx.strokeStyle='rgba(255,107,53,0.45)'; ctx.lineWidth=1.4; ctx.setLineDash([4,3]); ctx.stroke(); ctx.setLineDash([]);
+
+    // Left cap
+    const r0 = f(a)*rScale; if(r0>2){ ctx.beginPath(); ctx.ellipse(toX(a),cy,r0*PERSP,r0,0,0,2*Math.PI); ctx.fillStyle='rgba(255,120,53,0.28)'; ctx.fill(); ctx.strokeStyle='rgba(255,107,53,0.6)'; ctx.lineWidth=1.3; ctx.stroke(); }
+    // Right cap
+    const rE = f(bP)*rScale; if(rE>2){ ctx.beginPath(); ctx.ellipse(toX(bP),cy,rE*PERSP,rE,0,0,2*Math.PI); ctx.fillStyle='rgba(255,150,70,0.38)'; ctx.fill(); ctx.strokeStyle='#ff6b35'; ctx.lineWidth=1.8; ctx.stroke(); }
+
+    // Axis
+    ctx.setLineDash([5,5]); ctx.strokeStyle='rgba(255,255,255,0.28)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(mg.l-12,cy); ctx.lineTo(mg.l+pw+12,cy); ctx.stroke(); ctx.setLineDash([]);
+    drawAxes(ctx, mg, pw, ph);
+    tickLabels(ctx, mg, pw, ph, a, b, 0, maxR, toX, y=>cy-y*rScale);
+    ctx.fillStyle='#ff6b35'; ctx.font='bold 12px Exo 2'; ctx.textAlign='left';
+    ctx.fillText('f(x) = √x', mg.l+8, mg.t+16);
+    ctx.fillStyle='rgba(255,255,255,0.28)'; ctx.font='10px Exo 2'; ctx.textAlign='center';
+    ctx.fillText('← eje de rotación →', mg.l+pw/2, cy-6);
+
+    if(p < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+window.addEventListener('load', () => { setTimeout(() => { drawDemoArea(); drawDemoVol(); }, 500); });
+
+/* ═══════════════════ EXERCISES ═══════════════════ */
+const EX = [
+  {id:'mm1',c:'mm',tl:'Área',title:'Consumo de Datos en Streaming',co:'🎬 Netflix Colombia',
+   ctx:'El equipo de ingeniería de Netflix estima el volumen total de datos de un video HD. La tasa de bits varía polinomialmente durante el streaming.',
+   prob:'La tasa $B(t)=3t^2+2t+10$ Mbps en $[0,5]$ s. Calcula el total de datos transferidos.',
+   prev:'$$\\text{Datos}=\\int_0^5(3t^2+2t+10)\\,dt$$',
+   steps:[{n:1,t:'Antiderivada',d:'$F(t)=t^3+t^2+10t$'},{n:2,t:'Teorema Fundamental',d:'$F(5)-F(0)=125+25+50=200$'}],
+   res:'$200$ Mb en 5 segundos'},
+  {id:'mm2',c:'mm',tl:'Volumen',title:'Malla 3D de Casco para Videojuego',co:'🎮 Riot Games',
+   ctx:'El equipo de assets genera geometrías por revolución. Un casco esférico se modela rotando una curva circular.',
+   prob:'Perfil $f(x)=\\sqrt{9-x^2}$ en $[-3,3]$. Calcula el volumen del sólido por el método del disco.',
+   prev:'$$V=\\pi\\int_{-3}^{3}(9-x^2)\\,dx$$',
+   steps:[{n:1,t:'$[f(x)]^2$',d:'$(\\sqrt{9-x^2})^2=9-x^2$'},{n:2,t:'Antiderivada',d:'$F(x)=9x-x^3/3$'},{n:3,t:'Evaluar',d:'$F(3)-F(-3)=18-(-18)=36$'}],
+   res:'$V=36\\pi\\approx 113.1$ u³ (esfera de radio 3)'},
+  {id:'ind1',c:'ind',tl:'Área',title:'Producción Total en Planta',co:'⚙️ Coca-Cola FEMSA — Tocancipá',
+   ctx:'La planta registra que su tasa de producción varía polinomialmente durante un turno de 6 horas por factores operativos.',
+   prob:'Tasa $P\'(t)=-2t^2+12t+20$ miles botellas/h en $[0,6]$. Calcula la producción total del turno.',
+   prev:'$$P_{\\text{total}}=\\int_0^6(-2t^2+12t+20)\\,dt$$',
+   steps:[{n:1,t:'Antiderivada',d:'$F(t)=-2t^3/3+6t^2+20t$'},{n:2,t:'$F(6)-F(0)$',d:'$=-144+216+120=192$'}],
+   res:'$192$ 000 botellas en el turno'},
+  {id:'ind2',c:'ind',tl:'Volumen',title:'Depósito de Almacenamiento',co:'🏭 Siemens Colombia',
+   ctx:'Siemens diseña un tanque industrial cuya sección transversal se genera por revolución de una parábola.',
+   prob:'Perfil $f(x)=2\\sqrt{x}$ en $[0,4]$ m. Calcula el volumen del tanque girando alrededor del eje $x$.',
+   prev:'$$V=\\pi\\int_0^4(2\\sqrt{x})^2\\,dx=4\\pi\\int_0^4 x\\,dx$$',
+   steps:[{n:1,t:'Simplificar',d:'$[2\\sqrt{x}]^2=4x$'},{n:2,t:'Antiderivada',d:'$F(x)=2x^2$'},{n:3,t:'$4\\pi[2x^2]_0^4$',d:'$=4\\pi\\cdot32=32\\pi$... wait: $4\\pi[x^2/2]_0^4=4\\pi\\cdot8=32\\pi$'}],
+   res:'$V=32\\pi\\approx 100.5$ m³'},
+  {id:'sw1',c:'sw',tl:'Área',title:'Datos Procesados por Microservicio',co:'💻 Mercado Libre — Plataforma Tech',
+   ctx:'El equipo SRE monitorea el procesamiento de datos en un microservicio de recomendaciones durante la hora pico.',
+   prob:'Tasa $C(t)=4t^3-3t^2+2$ GB/h en $[0,3]$. Calcula el total de datos procesados.',
+   prev:'$$D=\\int_0^3(4t^3-3t^2+2)\\,dt$$',
+   steps:[{n:1,t:'Antiderivada',d:'$F(t)=t^4-t^3+2t$'},{n:2,t:'Evaluar',d:'$F(3)-F(0)=81-27+6=60$'}],
+   res:'$60$ GB procesados en 3 horas'},
+  {id:'sw2',c:'sw',tl:'Área entre curvas',title:'Brecha de Eficiencia Algorítmica',co:'🔍 Google Colombia',
+   ctx:'El equipo analiza la diferencia de rendimiento entre dos algoritmos. La brecha acumulada se cuantifica como área entre sus curvas de costo.',
+   prob:'Algoritmo A: $f(n)=n^2$, Algoritmo B: $g(n)=2n$ en $[0,2]$. Calcula el área total entre las curvas.',
+   prev:'$$A=\\int_0^2(2n-n^2)\\,dn$$',
+   steps:[{n:1,t:'Intersecciones',d:'$n^2=2n\\Rightarrow n=0$ o $n=2$'},{n:2,t:'¿Cuál es mayor en $(0,2)$?',d:'$g(1)=2>f(1)=1$, entonces $g>f$'},{n:3,t:'Integral',d:'$[n^2-n^3/3]_0^2=4-8/3=4/3$'}],
+   res:'$A=4/3\\approx 1.33$ u² de brecha de eficiencia'},
+  {id:'sis1',c:'sis',tl:'Área',title:'Consumo de Ancho de Banda',co:'📡 Claro Colombia — NOC Bogotá',
+   ctx:'El NOC de Claro modela el consumo de ancho de banda en 10 horas nocturnas para optimizar capacidad de enlaces troncales.',
+   prob:'Consumo $B(t)=200e^{0.1t}$ Mbps en $[0,10]$. Calcula el volumen total de datos transportados.',
+   prev:'$$D=\\int_0^{10}200e^{0.1t}\\,dt$$',
+   steps:[{n:1,t:'Antiderivada',d:'$\\int e^{0.1t}\\,dt=10e^{0.1t}$'},{n:2,t:'Evaluar',d:'$200\\cdot[10e^{0.1t}]_0^{10}=2000(e-1)$'}],
+   res:'$2000(e-1)\\approx 3437$ Mb transportados'},
+  {id:'sis2',c:'sis',tl:'Volumen',title:'Antena Parabólica — Reflector',co:'🖥️ IBM Colombia — Data Center',
+   ctx:'IBM diseña una antena parabólica para comunicaciones internas. El reflector se genera por revolución de una parábola.',
+   prob:'Perfil $f(x)=x^2/4$ m en $[0,4]$. Calcula el volumen interior del reflector (método del disco).',
+   prev:'$$V=\\pi\\int_0^4\\left(\\frac{x^2}{4}\\right)^2dx=\\frac{\\pi}{16}\\int_0^4 x^4\\,dx$$',
+   steps:[{n:1,t:'Elevar al cuadrado',d:'$[x^2/4]^2=x^4/16$'},{n:2,t:'Antiderivada',d:'$x^5/5$'},{n:3,t:'Evaluar',d:'$(\\pi/16)\\cdot(x^5/5)|_0^4=(\\pi/80)\\cdot1024=64\\pi/5$'}],
+   res:'$V=64\\pi/5\\approx40.2$ m³'},
+  {id:'tel1',c:'tel',tl:'Área',title:'Energía de Señal Portadora 5G',co:'📡 Ericsson Colombia',
+   ctx:'Ericsson analiza la energía de una señal sinusoidal en una antena de prueba 5G para dimensionar el amplificador.',
+   prob:'Señal $x(t)=3\\sin(t)$ V. Calcula la energía $E=\\int_0^\\pi[x(t)]^2\\,dt$.',
+   prev:'$$E=9\\int_0^{\\pi}\\sin^2(t)\\,dt=\\frac{9}{2}\\int_0^{\\pi}(1-\\cos 2t)\\,dt$$',
+   steps:[{n:1,t:'Identidad $\\sin^2=\\frac{1-\\cos 2t}{2}$',d:'$E=\\frac{9}{2}\\int_0^\\pi(1-\\cos 2t)\\,dt$'},{n:2,t:'Antiderivada',d:'$F(t)=t-\\sin(2t)/2$'},{n:3,t:'Evaluar $\\frac{9}{2}(\\pi-0)$',d:'$E=9\\pi/2$'}],
+   res:'$E=9\\pi/2\\approx14.14$ J en el semiperíodo'},
+  {id:'tel2',c:'tel',tl:'Volumen',title:'Patrón de Radiación Omnidireccional',co:'📶 Huawei Colombia — Antenas Macro',
+   ctx:'Huawei modela el volumen de cobertura 3D de una antena. El patrón de ganancia se rota para obtener el patrón omnidireccional.',
+   prob:'Ganancia normalizada $G(x)=\\cos(x)$ en $[0,\\pi/2]$. Calcula el volumen del sólido de revolución alrededor del eje $x$.',
+   prev:'$$V=\\pi\\int_0^{\\pi/2}\\cos^2(x)\\,dx$$',
+   steps:[{n:1,t:'Identidad',d:'$\\cos^2(x)=(1+\\cos 2x)/2$'},{n:2,t:'$V=(\\pi/2)\\int_0^{\\pi/2}(1+\\cos 2x)dx$',d:'$F(x)=x+\\sin(2x)/2$'},{n:3,t:'Evaluar',d:'$(\\pi/2)[\\pi/2+0-0-0]=\\pi^2/4$'}],
+   res:'$V=\\pi^2/4\\approx2.47$ u³'},
+  {id:'ds1',c:'ds',tl:'Área',title:'Probabilidad bajo PDF de Riesgo Crediticio',co:'📊 Bancolombia — Analytics',
+   ctx:'El equipo de Data Science modela la distribución de riesgo de su portafolio y calcula la probabilidad de que un cliente sea de riesgo bajo.',
+   prob:'PDF: $f(x)=\\frac{3}{2}(1-x^2)$ en $[0,1]$. Calcula $P(0\\leq X\\leq 0.6)$.',
+   prev:'$$P=\\int_0^{0.6}\\frac{3}{2}(1-x^2)\\,dx$$',
+   steps:[{n:1,t:'Verificar PDF',d:'$\\int_0^1\\frac{3}{2}(1-x^2)dx=1$ ✓'},{n:2,t:'Antiderivada',d:'$F(x)=\\frac{3x}{2}-\\frac{x^3}{2}$'},{n:3,t:'$F(0.6)-F(0)$',d:'$=0.9-0.108=0.792$'}],
+   res:'$P=0.792$ → 79.2% de clientes en riesgo bajo'},
+  {id:'ds2',c:'ds',tl:'Área entre curvas',title:'Discrepancia entre Modelos de Recomendación',co:'🎵 Spotify Colombia — ML Team',
+   ctx:'El equipo de ML compara dos modelos de recomendación. El área entre sus distribuciones cuantifica la discrepancia de scores.',
+   prob:'Modelo A: $f(x)=-x^2+4$, Modelo B: $g(x)=x^2$. Calcula el área entre las curvas.',
+   prev:'$$A=\\int_{-\\sqrt{2}}^{\\sqrt{2}}(4-2x^2)\\,dx$$',
+   steps:[{n:1,t:'Intersecciones',d:'$-x^2+4=x^2\\Rightarrow x=\\pm\\sqrt{2}$'},{n:2,t:'Integrar por simetría',d:'$2\\int_0^{\\sqrt{2}}(4-2x^2)dx=2[4x-2x^3/3]_0^{\\sqrt{2}}$'},{n:3,t:'Evaluar',d:'$2(4\\sqrt{2}-4\\sqrt{2}/3)=2\\cdot8\\sqrt{2}/3=16\\sqrt{2}/3$'}],
+   res:'$A=16\\sqrt{2}/3\\approx7.54$ u²'}
+];
+
+function renderEx(filter) {
+  const grid = document.getElementById('exgrid');
+  const data = filter === 'all' ? EX : EX.filter(e => e.c === filter);
+  grid.innerHTML = data.map(e => `
+    <div class="excard" data-c="${e.c}" id="ec-${e.id}">
+      <div class="exh">
+        <div class="exbadge">${e.tl}</div>
+        <div class="extitle">${e.title}</div>
+      </div>
+      <div class="exb">
+        <div class="excmp">${e.co}</div>
+        <div class="exctx">${e.ctx}</div>
+        <div class="expb">${e.prob}</div>
+        <div class="exfp">${e.prev}</div>
+        <button class="bsol" onclick="toggleSol('${e.id}',this)"><span>🔍</span> Ver Solución</button>
+      </div>
+      <div class="solpanel" id="sp-${e.id}">
+        ${e.steps.map(s=>`<div class="solstep"><div class="soln">${s.n}</div><div><strong>${s.t}:</strong> ${s.d}</div></div>`).join('')}
+        <div class="solres">✓ ${e.res}</div>
+      </div>
+    </div>
+  `).join('');
+  if(window.renderMathInElement) setTimeout(() => renderMathInElement(grid, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false}), 100);
+}
+
+function toggleSol(id, btn) {
+  const p = document.getElementById('sp-' + id);
+  const open = p.classList.toggle('open');
+  btn.innerHTML = open ? '<span>▲</span> Ocultar' : '<span>🔍</span> Ver Solución';
+}
+
+function filterEx(c, btn) {
+  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderEx(c);
+}
+
+renderEx('all');
+
+/* ═══════════════════ LAB COMPUTE ═══════════════════ */
+let lastF = '', lastG = '', lastA = 0, lastB = 3, lastType = 'area', lastVMethod = 'disk';
+
+function loadP(f, g, a, b, type) {
+  document.getElementById('lf').value = f;
+  document.getElementById('lg').value = g || '0';
+  document.getElementById('la').value = String(a);
+  document.getElementById('lb').value = String(b);
+  document.getElementById('ltype').value = type || 'area';
+  labCompute();
+}
+
+function labReset() {
+  document.getElementById('lf').value = 'x*x';
+  document.getElementById('lg').value = '0';
+  document.getElementById('la').value = '0';
+  document.getElementById('lb').value = '3';
+  document.getElementById('ltype').value = 'area';
+  document.getElementById('lvmethod').value = 'disk';
+  document.getElementById('resArea').classList.remove('show');
+  document.getElementById('resVol').classList.remove('show');
+  document.getElementById('errMsg').classList.remove('show');
+  document.getElementById('empty2d').style.display = 'flex';
+  document.getElementById('empty3d').style.display = 'flex';
+  document.getElementById('cviz2d').style.display = 'none';
+  document.getElementById('cviz3d').style.display = 'none';
+  document.getElementById('areaHint').textContent = 'Ingresa una función y calcula';
+  document.getElementById('volHint').textContent = 'Ingresa una función y calcula';
+  [document.getElementById('lf'), document.getElementById('lg')].forEach(el => el.classList.remove('error'));
+}
+
+function showError(msg) {
+  const el = document.getElementById('errMsg');
+  el.textContent = '⚠ ' + msg;
+  el.classList.add('show');
+}
+
+function labCompute() {
+  document.getElementById('errMsg').classList.remove('show');
+  [document.getElementById('lf'), document.getElementById('lg')].forEach(el => el.classList.remove('error'));
+
+  const fStr  = document.getElementById('lf').value.trim();
+  const gStr  = document.getElementById('lg').value.trim();
+  const aStr  = document.getElementById('la').value.trim();
+  const bStr  = document.getElementById('lb').value.trim();
+  const type  = document.getElementById('ltype').value;
+  const vMeth = document.getElementById('lvmethod').value;
+
+  // Validate limits
+  const a = evalNum(aStr), b = evalNum(bStr);
+  if(isNaN(a) || isNaN(b)) { showError('Los límites a y b no son números válidos.'); return; }
+  if(a >= b) { showError('El límite inferior a debe ser menor que el límite superior b.'); return; }
+
+  // Validate functions
+  const fTest = safeEval(fStr, (a + b) / 2);
+  if(fTest === null) {
+    document.getElementById('lf').classList.add('error');
+    showError('f(x) tiene un error de sintaxis. Revisa la guía de funciones (botón ❓).');
+    return;
+  }
+  const gTest = safeEval(gStr, (a + b) / 2);
+  if(gTest === null && gStr !== '' && gStr !== '0') {
+    document.getElementById('lg').classList.add('error');
+    showError('g(x) tiene un error de sintaxis.');
+    return;
+  }
+
+  const f = x => safeEval(fStr, x);
+  const g = x => safeEval(gStr, x) || 0;
+
+  lastF = fStr; lastG = gStr; lastA = a; lastB = b; lastType = type; lastVMethod = vMeth;
+
+  // ── AREA ──
+  let areaVal;
+  if(type === 'area') {
+    areaVal = integrate(x => { const v = f(x); return v !== null ? Math.abs(v) : 0; }, a, b);
+  } else {
+    areaVal = integrate(x => { const fv = f(x)||0, gv = g(x)||0; return Math.abs(fv - gv); }, a, b);
+  }
+
+  // ── VOLUME ──
+  let volVal;
+  if(vMeth === 'disk') {
+    volVal = Math.PI * integrate(x => { const v = f(x); return v !== null ? v*v : 0; }, a, b);
+  } else if(vMeth === 'washer') {
+    volVal = Math.PI * integrate(x => { const fv=f(x)||0, gv=g(x)||0; return fv*fv - gv*gv; }, a, b);
+  } else {
+    volVal = 2 * Math.PI * integrate(x => { const v = f(x); return v !== null ? Math.abs(x * v) : 0; }, a, b);
+  }
+
+  // Display results
+  const areaBox = document.getElementById('resArea');
+  const volBox  = document.getElementById('resVol');
+  areaBox.classList.add('show');
+  volBox.classList.add('show');
+
+  document.getElementById('resAreaVal').textContent  = areaVal.toFixed(6) + ' u²';
+  document.getElementById('resAreaForm').textContent = type === 'area'
+    ? `∫[${a}, ${b}] |f(x)| dx`
+    : `∫[${a}, ${b}] |f(x)−g(x)| dx`;
+
+  document.getElementById('resVolVal').textContent  = volVal.toFixed(6) + ' u³';
+  const vmLabel = vMeth === 'disk' ? 'π·∫[f(x)]²dx' : (vMeth === 'washer' ? 'π·∫[f²−g²]dx' : '2π·∫x·f(x)dx');
+  document.getElementById('resVolForm').textContent = `[${a}, ${b}] ${vmLabel}`;
+
+  document.getElementById('areaHint').textContent = `f(x)=${fStr}  |  a=${a}, b=${b}`;
+  document.getElementById('volHint').textContent  = `${vMeth==='disk'?'Disco':vMeth==='washer'?'Arandela':'Shell'} | f(x)=${fStr}`;
+
+  // Render both canvases
+  renderArea2D(fStr, gStr, a, b, type);
+  renderVolume3D(fStr, gStr, a, b, vMeth);
+}
+
+/* ═══════════════════ 2D AREA CANVAS ═══════════════════ */
+function renderArea2D(fStr, gStr, a, b, type) {
+  const el = document.getElementById('cviz2d');
+  const emp = document.getElementById('empty2d');
+  // Resize canvas to container width
+  const wrap = el.parentElement;
+  const W = wrap.offsetWidth || 560;
+  const H = 340;
+  el.width = W; el.height = H;
+  el.style.display = 'block';
+  emp.style.display = 'none';
+
+  const ctx = el.getContext('2d');
+  const mg = {l:55, r:25, t:28, b:44};
+  const pw = W - mg.l - mg.r, ph = H - mg.t - mg.b;
+  const f = x => safeEval(fStr, x);
+  const g = x => safeEval(gStr, x) || 0;
+
+  // Compute y range
+  let yMin = 0, yMax = 0;
+  const NS = 400;
+  for(let i = 0; i <= NS; i++) {
+    const x = a + (b - a) * i / NS;
+    const fv = f(x), gv = g(x) || 0;
+    if(fv !== null) { yMin = Math.min(yMin, fv, gv); yMax = Math.max(yMax, fv, gv); }
+  }
+  const yPad = (yMax - yMin) * 0.14 || 1;
+  yMin -= yPad; yMax += yPad;
+  const xPad = (b - a) * 0.07;
+  const xMin = a - xPad, xMax = b + xPad;
+
+  const toX = x => mg.l + (x - xMin) / (xMax - xMin) * pw;
+  const toY = y => mg.t + ph - (y - yMin) / (yMax - yMin) * ph;
+
+  let st = null;
+  function frame(ts) {
+    if(!st) st = ts;
+    const p = Math.min(1, (ts - st) / 850);
+    const bP = a + (b - a) * p;
+    bgRect(ctx, W, H);
+    drawGrid(ctx, mg, pw, ph);
+
+    // Zero line
+    if(yMin < 0 && yMax > 0) {
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 1; ctx.setLineDash([3,4]);
+      ctx.beginPath(); ctx.moveTo(mg.l, toY(0)); ctx.lineTo(mg.l+pw, toY(0)); ctx.stroke(); ctx.setLineDash([]);
+    }
+
+    // Shaded region
+    const NP = 250;
+    if(type === 'area') {
+      ctx.beginPath();
+      ctx.moveTo(toX(a), toY(0));
+      for(let i = 0; i <= NP; i++) { const x = a+(bP-a)*i/NP; const v=f(x); if(v!==null) ctx.lineTo(toX(x),toY(v)); }
+      ctx.lineTo(toX(bP), toY(0));
+      ctx.closePath();
+      const grd = ctx.createLinearGradient(0,toY(yMax),0,toY(yMin));
+      grd.addColorStop(0,'rgba(0,212,255,0.65)'); grd.addColorStop(1,'rgba(168,85,247,0.18)');
+      ctx.fillStyle=grd; ctx.fill();
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(toX(a), toY(g(a)||0));
+      for(let i=0;i<=NP;i++){const x=a+(bP-a)*i/NP;const gv=g(x)||0;ctx.lineTo(toX(x),toY(gv));}
+      for(let i=NP;i>=0;i--){const x=a+(bP-a)*i/NP;const fv=f(x)||0;ctx.lineTo(toX(x),toY(fv));}
+      ctx.closePath();
+      const grd2=ctx.createLinearGradient(0,toY(yMax),0,toY(yMin));
+      grd2.addColorStop(0,'rgba(255,107,53,0.55)'); grd2.addColorStop(1,'rgba(168,85,247,0.15)');
+      ctx.fillStyle=grd2; ctx.fill();
+    }
+
+    // Riemann strips (decorative, light)
+    const nR = 18;
+    for(let i = 0; i < nR; i++) {
+      const x0 = a + (bP - a) * i / nR;
+      const x1 = a + (bP - a) * (i+1) / nR;
+      const xm = (x0+x1)/2;
+      const fv = f(xm)||0, gv = g(xm)||0;
+      const y0 = type==='area' ? toY(0) : toY(Math.min(fv,gv));
+      const y1v = type==='area' ? toY(Math.abs(fv)) : toY(Math.max(fv,gv));
+      ctx.fillStyle='rgba(255,255,255,0.025)';
+      ctx.fillRect(toX(x0),Math.min(y0,y1v),(x1-x0)/(xMax-xMin)*pw,Math.abs(y1v-y0));
+      ctx.strokeStyle='rgba(255,255,255,0.04)'; ctx.lineWidth=0.5;
+      ctx.strokeRect(toX(x0),Math.min(y0,y1v),(x1-x0)/(xMax-xMin)*pw,Math.abs(y1v-y0));
+    }
+
+    // g(x) curve
+    if(type === 'between') {
+      ctx.beginPath(); let fg = true;
+      for(let i=0;i<=400;i++){const x=xMin+(xMax-xMin)*i/400;const gv=safeEval(gStr,x)||0;if(fg){ctx.moveTo(toX(x),toY(gv));fg=false;}else ctx.lineTo(toX(x),toY(gv));}
+      ctx.strokeStyle='#ff6b35'; ctx.lineWidth=2.2; ctx.stroke();
+    }
+
+    // f(x) curve
+    ctx.beginPath(); let ff = true;
+    for(let i=0;i<=400;i++){const x=xMin+(xMax-xMin)*i/400;const v=f(x);if(v===null){ff=true;continue;}if(ff){ctx.moveTo(toX(x),toY(v));ff=false;}else ctx.lineTo(toX(x),toY(v));}
+    ctx.strokeStyle='#00d4ff'; ctx.lineWidth=2.5; ctx.stroke();
+
+    // Limit lines
+    [a,b].forEach(lim=>{
+      ctx.strokeStyle='rgba(255,255,255,0.22)'; ctx.lineWidth=1; ctx.setLineDash([4,5]);
+      ctx.beginPath(); ctx.moveTo(toX(lim),mg.t); ctx.lineTo(toX(lim),mg.t+ph); ctx.stroke(); ctx.setLineDash([]);
+    });
+
+    drawAxes(ctx, mg, pw, ph);
+    tickLabels(ctx, mg, pw, ph, xMin, xMax, yMin, yMax, toX, toY);
+
+    // Labels
+    ctx.fillStyle='#00d4ff'; ctx.font='bold 12px Exo 2'; ctx.textAlign='left';
+    ctx.fillText('f(x) = '+fStr, mg.l+8, mg.t+16);
+    if(type==='between'){ctx.fillStyle='#ff6b35'; ctx.fillText('g(x) = '+gStr, mg.l+8, mg.t+32);}
+    ctx.fillStyle='rgba(255,255,255,0.28)'; ctx.font='10px Exo 2'; ctx.textAlign='center';
+    ctx.fillText('x', mg.l+pw+18, mg.t+ph+4);
+
+    if(p < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ═══════════════════ 3D VOLUME CANVAS (Pure Canvas 2D perspective) ═══════════════════ */
+function renderVolume3D(fStr, gStr, a, b, vMeth) {
+  const el = document.getElementById('cviz3d');
+  const emp = document.getElementById('empty3d');
+  const wrap = el.parentElement;
+  const W = wrap.offsetWidth || 560;
+  const H = 340;
+  el.width = W; el.height = H;
+  el.style.display = 'block';
+  emp.style.display = 'none';
+
+  const ctx = el.getContext('2d');
+  const mg = {l:60, r:30, t:30, b:48};
+  const pw = W - mg.l - mg.r, ph = H - mg.t - mg.b;
+  const f = x => Math.max(0, safeEval(fStr, x) || 0);
+  const g = x => Math.max(0, safeEval(gStr, x) || 0);
+
+  const N = 300;
+  let maxR = 0;
+  for(let i = 0; i <= N; i++) {
+    const x = a + (b - a) * i / N;
+    maxR = Math.max(maxR, vMeth==='washer' ? f(x) : (vMeth==='shell' ? Math.abs(f(x)) : f(x)));
+  }
+  if(maxR < 1e-9) {
+    bgRect(ctx, W, H);
+    ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='14px Exo 2'; ctx.textAlign='center';
+    ctx.fillText('f(x) es cero en el intervalo', W/2, H/2);
+    return;
+  }
+
+  const cy = mg.t + ph * 0.5;
+  const toX = x => mg.l + (x - a) / (b - a) * pw;
+  const toR = r => r / maxR * (ph / 2) * 0.80;
+  const PERSP = 0.20; // perspective factor for ellipses
+
+  const colorMain = vMeth === 'shell' ? '#a855f7' : '#00d4ff';
+  const colorLight = vMeth === 'shell' ? 'rgba(168,85,247,' : 'rgba(0,212,255,';
+
+  let st = null;
+  function frame(ts) {
+    if(!st) st = ts;
+    const p = Math.min(1, (ts - st) / 1100);
+    const bP = a + (b - a) * p;
+    const NP = Math.max(2, Math.ceil(N * p));
+
+    bgRect(ctx, W, H);
+    drawGrid(ctx, mg, pw, ph);
+
+    // Build current points
+    const pts = [];
+    for(let i = 0; i <= NP; i++) {
+      const x = a + (bP - a) * i / NP;
+      const r = toR(vMeth === 'washer' ? f(x) : (vMeth === 'shell' ? Math.abs(f(x)) : f(x)));
+      const ri = vMeth === 'washer' ? toR(g(x)) : 0;
+      pts.push({ x, sx: toX(x), r, ri });
+    }
+
+    // ── Body fill ──
+    ctx.beginPath();
+    pts.forEach((d,i) => { if(i===0) ctx.moveTo(d.sx, cy-d.r); else ctx.lineTo(d.sx, cy-d.r); });
+    for(let i = pts.length-1; i >= 0; i--) ctx.lineTo(pts[i].sx, cy + pts[i].r);
+    ctx.closePath();
+    const bodyGrd = ctx.createLinearGradient(0, cy - toR(maxR), 0, cy + toR(maxR));
+    bodyGrd.addColorStop(0, colorLight+'0.14)');
+    bodyGrd.addColorStop(0.28, colorLight+'0.42)');
+    bodyGrd.addColorStop(0.5, colorLight+'0.60)');
+    bodyGrd.addColorStop(0.72, colorLight+'0.42)');
+    bodyGrd.addColorStop(1, colorLight+'0.12)');
+    ctx.fillStyle = bodyGrd; ctx.fill();
+
+    // ── Inner hole body (washer only) ──
+    if(vMeth === 'washer') {
+      ctx.beginPath();
+      pts.forEach((d,i) => { if(i===0) ctx.moveTo(d.sx, cy-d.ri); else ctx.lineTo(d.sx, cy-d.ri); });
+      for(let i = pts.length-1; i >= 0; i--) ctx.lineTo(pts[i].sx, cy + pts[i].ri);
+      ctx.closePath();
+      ctx.fillStyle = '#04080f'; ctx.fill();
+    }
+
+    // ── Disc/ring cross-section lines ──
+    const nd = Math.min(14, Math.ceil(14 * p));
+    for(let k = 0; k <= nd; k++) {
+      const d = pts[Math.floor(k * (pts.length-1) / nd)] || pts[pts.length-1];
+      if(d.r < 2) continue;
+      // Outer ellipse
+      ctx.beginPath(); ctx.ellipse(d.sx, cy, d.r*PERSP, d.r, 0, 0, 2*Math.PI);
+      ctx.strokeStyle = colorLight+'0.38)'; ctx.lineWidth = 0.85; ctx.stroke();
+      // Inner ellipse (washer)
+      if(vMeth === 'washer' && d.ri > 2) {
+        ctx.beginPath(); ctx.ellipse(d.sx, cy, d.ri*PERSP, d.ri, 0, 0, 2*Math.PI);
+        ctx.strokeStyle = colorLight+'0.5)'; ctx.lineWidth = 0.7; ctx.stroke();
+      }
+    }
+
+    // ── Top outline ──
+    ctx.beginPath();
+    pts.forEach((d,i) => { if(i===0) ctx.moveTo(d.sx,cy-d.r); else ctx.lineTo(d.sx,cy-d.r); });
+    ctx.strokeStyle = colorMain; ctx.lineWidth = 2.6; ctx.stroke();
+
+    // ── Bottom outline (dashed) ──
+    ctx.beginPath();
+    pts.forEach((d,i) => { if(i===0) ctx.moveTo(d.sx,cy+d.r); else ctx.lineTo(d.sx,cy+d.r); });
+    ctx.strokeStyle = colorLight+'0.45)'; ctx.lineWidth = 1.4; ctx.setLineDash([4,3]); ctx.stroke(); ctx.setLineDash([]);
+
+    // ── End cap left ──
+    const d0 = pts[0];
+    if(d0 && d0.r > 2) {
+      ctx.beginPath(); ctx.ellipse(d0.sx, cy, d0.r*PERSP, d0.r, 0, 0, 2*Math.PI);
+      ctx.fillStyle = colorLight+'0.30)'; ctx.fill();
+      ctx.strokeStyle = colorLight+'0.6)'; ctx.lineWidth = 1.4; ctx.stroke();
+      if(vMeth==='washer'&&d0.ri>2){ctx.beginPath();ctx.ellipse(d0.sx,cy,d0.ri*PERSP,d0.ri,0,0,2*Math.PI);ctx.fillStyle='#04080f';ctx.fill();ctx.strokeStyle=colorLight+'0.7)';ctx.lineWidth=1;ctx.stroke();}
+    }
+
+    // ── End cap right ──
+    const dE = pts[pts.length-1];
+    if(dE && dE.r > 2) {
+      ctx.beginPath(); ctx.ellipse(dE.sx, cy, dE.r*PERSP, dE.r, 0, 0, 2*Math.PI);
+      ctx.fillStyle = colorLight+'0.40)'; ctx.fill();
+      ctx.strokeStyle = colorMain; ctx.lineWidth = 2; ctx.stroke();
+      if(vMeth==='washer'&&dE.ri>2){ctx.beginPath();ctx.ellipse(dE.sx,cy,dE.ri*PERSP,dE.ri,0,0,2*Math.PI);ctx.fillStyle='#04080f';ctx.fill();ctx.strokeStyle=colorLight+'0.8)';ctx.lineWidth=1;ctx.stroke();}
+    }
+
+    // ── Rotation axis ──
+    ctx.setLineDash([6,5]); ctx.strokeStyle='rgba(255,255,255,0.25)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(mg.l-16,cy); ctx.lineTo(mg.l+pw+16,cy); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='rgba(255,255,255,0.28)'; ctx.font='9px JetBrains Mono'; ctx.textAlign='center';
+    ctx.fillText('← eje de rotación →', mg.l+pw/2, cy-7);
+
+    // ── Axes ──
+    drawAxes(ctx, mg, pw, ph);
+
+    // ── Tick labels ──
+    ctx.fillStyle='rgba(190,215,235,0.5)'; ctx.font='10px JetBrains Mono'; ctx.textAlign='center';
+    for(let i = 0; i <= 5; i++) {
+      const xv = a + (b-a)*i/5;
+      ctx.fillText(xv.toFixed(1), toX(xv), mg.t+ph+16);
+    }
+    ctx.textAlign='right';
+    ctx.fillText(maxR.toFixed(2), mg.l-5, cy-toR(maxR)+4);
+    ctx.fillText('0', mg.l-5, cy+4);
+    ctx.fillText('-'+maxR.toFixed(2), mg.l-5, cy+toR(maxR)+4);
+
+    // ── Labels ──
+    ctx.fillStyle = colorMain; ctx.font='bold 12px Exo 2'; ctx.textAlign='left';
+    ctx.fillText('f(x) = '+fStr, mg.l+8, mg.t+16);
+    if(vMeth==='washer'){ctx.fillStyle='#ff6b35'; ctx.fillText('g(x) = '+gStr, mg.l+8, mg.t+30);}
+
+    const methodLabel = vMeth==='disk'?'Disco: V=π∫[f(x)]²dx' : (vMeth==='washer'?'Arandela: V=π∫[f²−g²]dx':'Shell: V=2π∫x·f(x)dx');
+    ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='9px Exo 2'; ctx.textAlign='right';
+    ctx.fillText(methodLabel, mg.l+pw, mg.t+16);
+
+    if(p < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ═══════════════════ QUIZ ═══════════════════ */
+const QS = [
+  {q:'¿Qué representa geométricamente $\\int_0^3 x^2\\,dx$?',formula:null,
+   opts:['La longitud de la curva $x^2$ de 0 a 3','El área bajo la parábola $x^2$ entre $x=0$ y $x=3$','La pendiente de $x^2$ en $x=3$','El perímetro de la región bajo $x^2$'],
+   ans:1,fb:'La integral definida $\\int_a^b f(x)\\,dx$ con $f\\geq 0$ es el área neta bajo la curva. Aquí el área es $[x^3/3]_0^3=9$ u².'},
+  {q:'En Industrial (Coca-Cola), si $P\'(t)$ es la tasa de producción en unidades/hora, ¿qué calcula $\\int_0^8 P\'(t)\\,dt$?',formula:'$$\\int_0^8 P\'(t)\\,dt$$',
+   opts:['La tasa máxima de producción','La tasa promedio','La producción total en 8 horas','El tiempo de producción mínima'],
+   ans:2,fb:'Por el Teorema Fundamental, $\\int_0^8 P\'(t)\\,dt=P(8)-P(0)$: la producción total acumulada. La integral de una tasa = cantidad total.'},
+  {q:'¿Cuál es la fórmula del área entre $f(x)\\geq g(x)$ en $[a,b]$?',formula:null,
+   opts:['$\\displaystyle\\int_a^b f(x)\\cdot g(x)\\,dx$','$\\displaystyle\\int_a^b [f(x)+g(x)]\\,dx$','$\\displaystyle\\int_a^b [f(x)-g(x)]\\,dx$','$\\displaystyle\\int_a^b f(x)/g(x)\\,dx$'],
+   ans:2,fb:'El área entre curvas es siempre la integral de la diferencia: curva superior menos curva inferior. Si cambia el orden, hay que dividir el intervalo.'},
+  {q:'Volumen al rotar $f(x)=2$ (constante) alrededor del eje $x$ en $[0,5]$. ¿Cuánto es $V$?',formula:'$$V=\\pi\\int_0^5[f(x)]^2\\,dx$$',
+   opts:['$V=10\\pi$','$V=20\\pi$','$V=4\\pi$','$V=40\\pi$'],
+   ans:1,fb:'$V=\\pi\\int_0^5 4\\,dx=4\\pi\\cdot 5=20\\pi$. Este sólido es un cilindro de radio 2 y altura 5, con $V=\\pi r^2h=\\pi\\cdot4\\cdot5=20\\pi$ ✓.'},
+  {q:'(Data Science — Bancolombia) Si $f(x)$ es una densidad de probabilidad, ¿cuánto vale $\\int_{-\\infty}^{+\\infty}f(x)\\,dx$?',formula:null,
+   opts:['Depende de la distribución','Siempre es 0','Siempre es 1','Siempre es $\\infty$'],
+   ans:2,fb:'Axioma de la probabilidad: toda PDF integra 1 sobre su dominio, garantizando que la probabilidad total de todos los eventos posibles sea 100%.'},
+  {q:'Evalúa correctamente: $\\displaystyle\\int_1^4 2x\\,dx$',formula:null,
+   opts:['$8$','$12$','$15$','$16$'],
+   ans:2,fb:'$\\int_1^4 2x\\,dx=[x^2]_1^4=16-1=15$. La antiderivada de $2x$ es $x^2$, no $x^2+C$ (la constante se cancela al evaluar $F(b)-F(a)$).'},
+  {q:'(Software — Mercado Libre) El área entre $f(n)=2n$ y $g(n)=n^2$ en $[0,2]$ representa:',formula:'$$A=\\int_0^2(2n-n^2)\\,dn$$',
+   opts:['El tiempo de ejecución del peor algoritmo','La brecha acumulada de operaciones entre ambos algoritmos','La velocidad del algoritmo A','El consumo de memoria'],
+   ans:1,fb:'El área entre las curvas de costo mide cuántas operaciones extra "ahorra" el algoritmo lineal respecto al cuadrático en el rango $[0,2]$.'},
+  {q:'¿Diferencia fundamental entre disco y arandela (washer)?',formula:null,
+   opts:['Solo difieren en el eje de rotación','El disco es para sólidos macizos; la arandela incluye un hueco interior al rotar la región entre dos curvas','La arandela da siempre mayor volumen','Solo el disco usa integrales'],
+   ans:1,fb:'Disco: $V=\\pi\\int[f]^2dx$ (una curva, sin hueco). Arandela: $V=\\pi\\int[f^2-g^2]dx$ (dos curvas, hay hueco central al rotar la región entre ellas).'},
+  {q:'(Telecomunicaciones — Ericsson) Energía $E=\\int_0^{\\pi/2}\\cos^2(t)\\,dt = $?',formula:'$$E=\\int_0^{\\pi/2}\\cos^2(t)\\,dt$$',
+   opts:['$E=0$','$E=\\dfrac{\\pi}{4}$','$E=\\dfrac{\\pi}{2}$','$E=\\pi$'],
+   ans:1,fb:'Usando $\\cos^2t=\\frac{1+\\cos2t}{2}$: $E=\\frac{1}{2}[t+\\frac{\\sin2t}{2}]_0^{\\pi/2}=\\frac{1}{2}\\cdot\\frac{\\pi}{2}=\\frac{\\pi}{4}$.'},
+  {q:'Fórmula del método de capas cilíndricas (shells) al rotar $f(x)$ alrededor del eje $y$ en $[a,b]$:',formula:null,
+   opts:['$\\pi\\displaystyle\\int_a^b[f(x)]^2\\,dx$','$2\\pi\\displaystyle\\int_a^b x\\cdot f(x)\\,dx$','$2\\pi\\displaystyle\\int_a^b[f(x)]^2\\,dx$','$\\pi\\displaystyle\\int_a^b x\\cdot f(x)\\,dx$'],
+   ans:1,fb:'Shell: $V=2\\pi\\int_a^b x\\cdot f(x)\\,dx$. Cada "cáscara" tiene circunferencia $2\\pi x$, altura $f(x)$ y grosor $dx$. Producto = área lateral diferencial.'}
+];
+
+let qi=0, qs=0, qans=false, qtmr=null, qsec=900;
+
+function startQuiz(){
+  qi=0;qs=0;qans=false;qsec=900;
+  document.getElementById('qstart').style.display='none';
+  document.getElementById('qresults').style.display='none';
+  document.getElementById('qmain').style.display='block';
+  clearInterval(qtmr);
+  qtmr=setInterval(()=>{qsec--;const m=Math.floor(qsec/60),s=qsec%60;document.getElementById('qtimer').textContent=`⏱ ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;if(qsec<=0){clearInterval(qtmr);endQuiz();}},1000);
+  showQ();
+}
+
+function showQ(){
+  qans=false;
+  const q=QS[qi];
+  document.getElementById('qpfill').style.width=((qi+1)/QS.length*100)+'%';
+  document.getElementById('qcnt').textContent=`Pregunta ${qi+1} de ${QS.length}`;
+  document.getElementById('bnext').style.display='none';
+  const letters=['A','B','C','D'];
+  document.getElementById('qcontainer').innerHTML=`
+    <div class="qcard">
+      <div class="qnum">🔬 Pregunta ${qi+1}</div>
+      <div class="qtext">${q.q}</div>
+      ${q.formula?`<div class="qfml">${q.formula}</div>`:''}
+      <div class="ogrid">
+        ${q.opts.map((o,i)=>`<button class="obtn" id="ob${i}" onclick="pickAns(${i})"><span class="olet">${letters[i]}</span><span>${o}</span></button>`).join('')}
+      </div>
+      <div class="qfb" id="qfb"></div>
+    </div>`;
+  if(window.renderMathInElement) setTimeout(()=>renderMathInElement(document.getElementById('qcontainer'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false}),80);
+}
+
+function pickAns(i){
+  if(qans) return;
+  qans=true;
+  const q=QS[qi];
+  const ok=(i===q.ans);
+  if(ok) qs++;
+  document.querySelectorAll('.obtn').forEach((b,idx)=>{
+    b.classList.add('disabled');
+    if(idx===q.ans) b.classList.add('correct');
+    else if(idx===i&&!ok) b.classList.add('wrong');
+  });
+  const fb=document.getElementById('qfb');
+  fb.innerHTML=(ok?'✅ ':'❌ ')+q.fb;
+  fb.className='qfb show '+(ok?'ok':'bad');
+  if(window.renderMathInElement) setTimeout(()=>renderMathInElement(fb,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false}),80);
+  document.getElementById('bnext').style.display='block';
+  document.getElementById('bnext').textContent=qi<QS.length-1?'Siguiente →':'Ver Resultados →';
+}
+
+function nextQ(){ qi++; if(qi>=QS.length) endQuiz(); else showQ(); }
+
+function endQuiz(){
+  clearInterval(qtmr);
+  document.getElementById('qmain').style.display='none';
+  document.getElementById('qresults').style.display='block';
+  const pct=Math.round(qs/QS.length*100);
+  const pass=pct>=70;
+  const sc=document.getElementById('scircle');
+  sc.className='scircle '+(pass?'pass':'fail');
+  document.getElementById('spct').textContent=pct+'%';
+  document.getElementById('rmsg').textContent=pass?'🎓 ¡Excelente! Dominas los conceptos':'📚 Continúa practicando — ¡tú puedes!';
+  document.getElementById('rdet').textContent=`Respondiste correctamente ${qs} de ${QS.length} preguntas.`;
+  const cb=document.getElementById('certbox');
+  if(pass){cb.style.display='block';document.getElementById('certtext').innerHTML=`Se certifica que el estudiante demostró dominio de <strong>Áreas y Volúmenes mediante Integrales</strong> en Cálculo Integral, con puntaje <strong>${pct}%</strong>. ¡Felicitaciones!`;}
+  const rv=document.getElementById('revlist');
+  rv.innerHTML='<div style="font-family:var(--fh);font-size:.62rem;letter-spacing:.1em;color:var(--accent);text-transform:uppercase;margin-bottom:.9rem">Revisión de respuestas correctas</div>';
+  QS.forEach((q2,i)=>{rv.innerHTML+=`<div style="margin-bottom:.4rem;padding:.45rem .75rem;border-radius:8px;background:rgba(255,255,255,0.025);font-size:.8rem;color:var(--text-dim)"><span style="color:var(--green)">P.${i+1}</span> → ${q2.opts[q2.ans]}</div>`;});
+  if(window.renderMathInElement) setTimeout(()=>renderMathInElement(document.getElementById('qresults'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false}),100);
+}
+
+function retryQuiz(){document.getElementById('qresults').style.display='none';document.getElementById('qstart').style.display='block';}
+</script>
+</body>
+</html>
